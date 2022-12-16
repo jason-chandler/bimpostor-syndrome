@@ -1,3 +1,6 @@
+mod camera;
+
+use bevy::gltf::Gltf;
 use bevy::prelude::*;
 use bevy_inspector_egui::WorldInspectorPlugin;
 
@@ -22,7 +25,7 @@ fn main() {
     .add_startup_system(spawn_basic_scene)
     .add_startup_system(spawn_camera)
     .add_startup_system(asset_loading)
-    .add_system(camera_controls)
+    .add_system(camera::orbital_camera)
     .add_startup_system(spawn_gltf)
     .run();
 }
@@ -32,7 +35,7 @@ fn spawn_gltf(
     ass: Res<AssetServer>,
 ) {
     // note that we have to include the `Scene0` label
-    let my_gltf = ass.load("model-part.gltf_slabs_+10.76.gltf#Scene0");
+    let my_gltf = ass.load("LL_house.gltf#Scene0");
 
     // to position our 3d model, simply use the Transform
     // in the SceneBundle
@@ -47,45 +50,6 @@ fn spawn_gltf(
 fn asset_loading(mut commands: Commands, assets: Res<AssetServer>) {
 
 }
-
-fn camera_controls(
-    keyboard: Res<Input<KeyCode>>,
-    mut camera_query: Query<&mut Transform, With<Camera3d>>,
-    time: Res<Time>,
-) {
-    let mut camera = camera_query.single_mut();
-
-    let mut forward = camera.forward();
-    forward.y = 0.0;
-    forward = forward.normalize();
-
-    let mut left = camera.left();
-    left.y = 0.0;
-    left = left.normalize();
-
-    let speed = 3.0;
-    let rotate_speed = 0.3;
-    //Leafwing
-    if keyboard.pressed(KeyCode::W) {
-        camera.translation += forward * time.delta_seconds() * speed;
-    }
-    if keyboard.pressed(KeyCode::S) {
-        camera.translation -= forward * time.delta_seconds() * speed;
-    }
-    if keyboard.pressed(KeyCode::A) {
-        camera.translation += left * time.delta_seconds() * speed;
-    }
-    if keyboard.pressed(KeyCode::D) {
-        camera.translation -= left * time.delta_seconds() * speed;
-    }
-    if keyboard.pressed(KeyCode::Q) {
-        camera.rotate_axis(Vec3::Y, rotate_speed * time.delta_seconds())
-    }
-    if keyboard.pressed(KeyCode::E) {
-        camera.rotate_axis(Vec3::Y, -rotate_speed * time.delta_seconds())
-    }
-}
-
 
 fn spawn_basic_scene(
     mut commands: Commands,
@@ -114,8 +78,5 @@ fn spawn_basic_scene(
 }
 
 fn spawn_camera(mut commands: Commands) {
-    commands.spawn(Camera3dBundle {
-        transform: Transform::from_xyz(-2.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
-        ..default()
-    });
+    camera::spawn_camera(commands)
 }
