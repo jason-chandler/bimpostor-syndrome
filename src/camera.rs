@@ -1,3 +1,4 @@
+use bevy::input::keyboard::KeyboardInput;
 use bevy::prelude::*;
 use bevy::input::mouse::{MouseMotion, MouseWheel};
 use bevy::render::camera::Projection;
@@ -5,7 +6,8 @@ use bevy::render::camera::Projection;
 #[derive(Component)]
 pub(crate) struct OrbitalCamera {
     pub focal_point: Vec3,
-    pub orbital_radius: f32
+    pub orbital_radius: f32,
+    pub upside_down: bool
 }
 
 impl Default for OrbitalCamera {
@@ -13,6 +15,7 @@ impl Default for OrbitalCamera {
         OrbitalCamera {
             focal_point: Vec3::ZERO,
             orbital_radius: 5.0,
+            upside_down: false
         }
     }
 }
@@ -27,13 +30,13 @@ fn move_camera(
 ) {
     for(mut pan_orbit, mut transform, projection) in query.iter_mut() {
         if orbit_triggered {
-            // only check for upside down when orbiting started or ended this frame
             // if the camera is "upside" down, panning horizontally would be inverted, so invert the input to make it correct
             let up = transform.rotation * Vec3::Y;
+            pan_orbit.upside_down = up.y <= 0.0;
         }
-        let mut any = false;
+        let mut pos_changed = false;
         if rotation.length_squared() > 0.0 {
-            any = true;
+            pos_changed = true;
             let window = get_primary_window_size(&windows);
             let delta_x = {
                 let delta = rotation.x / window.x * std::f32::consts::PI * 2.0;
@@ -45,7 +48,7 @@ fn move_camera(
             transform.rotation = yaw * transform.rotation; // rotate around global y axis
             transform.rotation = transform.rotation * pitch; // rotate around local x axis
         } else if pan.length_squared() > 0.0 {
-            any = true;
+            pos_changed = true;
             // make panning distance independent of resolution and FOV,
             let window = get_primary_window_size(&windows);
             if let Projection::Perspective(projection) = projection {
@@ -58,16 +61,13 @@ fn move_camera(
             let translation = (right + up) * pan_orbit.orbital_radius;
             pan_orbit.focal_point += translation;
         } else if zoom.abs() > 0.0 {
-            any = true;
+            pos_changed = true;
             pan_orbit.orbital_radius -= zoom * pan_orbit.orbital_radius * 0.2;
             // dont allow zoom to reach zero or you get stuck
             pan_orbit.orbital_radius = f32::max(pan_orbit.orbital_radius, 0.05);
         }
 
-        if any {
-            // emulating parent/child to make the yaw/y-axis rotation behave like a turntable
-            // parent = x and y rotation
-            // child = z-offset
+        if pos_changed {
             let rot_matrix = Mat3::from_quat(transform.rotation);
             transform.translation = pan_orbit.focal_point + rot_matrix.mul_vec3(Vec3::new(0.0, 0.0, pan_orbit.orbital_radius));
         }
@@ -79,6 +79,7 @@ pub(crate) fn orbital_camera(
     mut motion_events: EventReader<MouseMotion>,
     mut scroll_events: EventReader<MouseWheel>,
     mouse_input: Res<Input<MouseButton>>,
+    keyboard_input: Res<Input<KeyCode>>,
     mut query: Query<(&mut OrbitalCamera, &mut Transform, &Projection)>,
 ) {
     let orbit_button = MouseButton::Left;
