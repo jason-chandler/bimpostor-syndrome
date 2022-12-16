@@ -1,4 +1,5 @@
 mod camera;
+mod ui;
 
 use bevy::gltf::Gltf;
 use bevy::prelude::*;
@@ -45,6 +46,7 @@ fn main() {
         SystemSet::on_enter(AppState::Display)
         .with_system(spawn_basic_scene)
         .with_system(spawn_gltf)
+        .with_system(ui::setup_ui_components)
     )
     .add_system(camera::orbital_camera)
     .run();
@@ -105,7 +107,7 @@ fn setup_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
     let button_entity = commands
         .spawn(ButtonBundle {
             style: Style {
-                size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+                size: Size::new(Val::Px(250.0), Val::Px(50.0)),
                 // center button
                 margin: UiRect::all(Val::Auto),
                 // horizontally center child text
@@ -119,10 +121,10 @@ fn setup_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
         })
         .with_children(|parent| {
             parent.spawn(TextBundle::from_section(
-                "Display Model",
+                "Start BIM Viewer",
                 TextStyle {
                     font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                    font_size: 40.0,
+                    font_size: 20.0,
                     color: Color::rgb(0.9, 0.9, 0.9),
                 },
             ));
