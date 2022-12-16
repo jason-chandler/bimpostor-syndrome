@@ -163,17 +163,17 @@ pub(crate) fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
               "hello\nbevy!",
               TextStyle {
                   font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                  font_size: 100.0,
+                  font_size: 15.0,
                   color: Color::WHITE,
               },
           ) // Set the alignment of the Text
-          .with_text_alignment(TextAlignment::TOP_CENTER)
           // Set the style of the TextBundle itself.
           .with_style(Style {
               position_type: PositionType::Absolute,
               position: UiRect {
-                  bottom: Val::Px(5.0),
-                  right: Val::Px(15.0),
+                  top: Val::Px(5.0),
+                  left: Val::Percent(40.0),
+                  right: Val::Percent(40.0),
                   ..default()
               },
               ..default()
