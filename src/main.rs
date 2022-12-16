@@ -1,4 +1,5 @@
 mod camera;
+mod ui;
 
 use bevy::gltf::Gltf;
 use bevy::prelude::*;
@@ -26,6 +27,8 @@ fn main() {
     .add_startup_system(spawn_camera)
     .add_startup_system(asset_loading)
     .add_system(camera::orbital_camera)
+    .add_startup_system(ui::setup)
+    .add_system(ui::text_color_system)
     .add_startup_system(spawn_gltf)
     .run();
 }
