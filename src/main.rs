@@ -1,6 +1,7 @@
 mod camera;
 mod ui;
 mod main_menu;
+mod selection;
 
 use bevy::gltf::Gltf;
 use bevy::prelude::*;
@@ -41,6 +42,8 @@ fn main() {
         .with_system(ui::setup_ui_components)
     )
     .add_system(camera::orbital_camera)
+    .add_startup_system(selection::init_selection_material)
+    .add_system(selection::add_selection)
     .run();
 }
 
