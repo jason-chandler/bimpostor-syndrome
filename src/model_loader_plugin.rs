@@ -41,7 +41,7 @@ fn keyboard_input_system(
     if keyboard_input.just_released(KeyCode::Space) {
         if !state.0 {
             load_events.send(LoadModelEvent {
-                path: "LL_house.gltf#Scene0".to_string(),
+                path: "test.gltf#Scene0".to_string(),
             });
         } else {
             unload_events.send_default();

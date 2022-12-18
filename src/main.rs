@@ -8,6 +8,7 @@ mod background;
 use bevy::gltf::Gltf;
 use bevy::prelude::*;
 use bevy_inspector_egui::WorldInspectorPlugin;
+use std::f32::consts::PI;
 
 pub use main_menu::*;
 pub use model_loader_plugin::*;
@@ -52,6 +53,7 @@ fn main() {
     .run();
 }
 
+// https://bevyengine.org/examples/3d/lighting/
 fn spawn_basic_scene(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -59,23 +61,36 @@ fn spawn_basic_scene(
 ) {
     commands
         .spawn(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Plane { size: 100.0 })),
+            mesh: meshes.add(Mesh::from(shape::Plane { size: 1000.0 })),
             material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
             ..default()
         })
         .insert(Name::new("Ground"));
 
-    commands
-        .spawn(PointLightBundle {
-            point_light: PointLight {
-                intensity: 1500.0,
-                shadows_enabled: true,
+        const HALF_SIZE: f32 = 10.0;
+    commands.spawn(DirectionalLightBundle {
+        directional_light: DirectionalLight {
+            // Configure the projection to better fit the scene
+            shadow_projection: OrthographicProjection {
+                left: -HALF_SIZE,
+                right: HALF_SIZE,
+                bottom: -HALF_SIZE,
+                top: HALF_SIZE,
+                near: -10.0 * HALF_SIZE,
+                far: 10.0 * HALF_SIZE,
                 ..default()
             },
-            transform: Transform::from_xyz(4.0, 8.0, 4.0),
+            shadows_enabled: true,
             ..default()
-        })
-        .insert(Name::new("Light"));
+        },
+        transform: Transform {
+            translation: Vec3::new(0.0, 2.0, 0.0),
+            rotation: Quat::from_rotation_x(-PI / 4.),
+            ..default()
+        },
+        ..default()
+    })
+    .insert(Name::new("Light"));
 }
 
 fn spawn_camera(mut commands: Commands) {
