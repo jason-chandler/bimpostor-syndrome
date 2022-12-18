@@ -171,3 +171,19 @@ pub(crate) fn set_brightness(
         atmosphere.sun_position = Vec3::new(1., 1., 1.);
     }
 }
+
+// pub(crate) fn set_color(
+//     mut commands: Commands,
+//     mut atmosphere: AtmosphereMut<Nishita>,
+//     keys: Res<Input<KeyCode>>,
+// ) {
+//     if keys.just_pressed(KeyCode::R) {
+//         atmosphere.horizon = Color::RED;
+//     } else if keys.just_pressed(KeyCode::G) {
+//         atmosphere.horizon = Color::GREEN;
+//     } else if keys.just_pressed(KeyCode::B) {
+//         atmosphere.horizon = Color::BLUE;
+//     } else if keys.just_pressed(KeyCode::Y) {
+//         atmosphere.horizon = Color::YELLOW;
+//     }
+// }
