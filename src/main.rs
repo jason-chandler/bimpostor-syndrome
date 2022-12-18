@@ -6,12 +6,9 @@ mod ui;
 use bevy::gltf::Gltf;
 use bevy::prelude::*;
 use bevy_inspector_egui::WorldInspectorPlugin;
-<<<<<<< HEAD
 use bevy_atmosphere::prelude::*;
-=======
 use std::f32::consts::PI;
 use bevy_mod_picking::{DefaultPickingPlugins, PickableBundle, PickingCameraBundle};
->>>>>>> main
 
 pub use main_menu::*;
 pub use model_loader_plugin::*;
@@ -43,13 +40,10 @@ fn main() {
     .add_state(AppState::Display)
     .add_plugin(WorldInspectorPlugin::new())
     .add_plugin(MainMenuPlugin)
-<<<<<<< HEAD
     .add_plugin(AtmospherePlugin)
     .add_system(camera::set_brightness)
-=======
     .add_plugin(ModelLoaderPlugin)
     .add_plugins(DefaultPickingPlugins)
->>>>>>> main
     .add_startup_system(spawn_camera)
     .add_system_set(
         SystemSet::on_enter(AppState::Display)
