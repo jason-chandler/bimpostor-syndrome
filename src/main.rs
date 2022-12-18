@@ -2,11 +2,11 @@ mod main_menu;
 mod model_loader_plugin;
 mod camera;
 mod ui;
-mod background;
 
 use bevy::gltf::Gltf;
 use bevy::prelude::*;
 use bevy_inspector_egui::WorldInspectorPlugin;
+use bevy_atmosphere::prelude::*;
 use std::f32::consts::PI;
 use bevy_mod_picking::{DefaultPickingPlugins, PickableBundle, PickingCameraBundle};
 
@@ -26,6 +26,7 @@ pub enum AppState {
 fn main() {
     App::new()
     .insert_resource(ClearColor(Color::rgb(0.2, 0.2, 0.2)))
+    .insert_resource(AtmosphereModel::default())
     .add_plugins(DefaultPlugins.set(WindowPlugin {
         window: WindowDescriptor {
             width: WIDTH,
@@ -39,6 +40,8 @@ fn main() {
     .add_state(AppState::Display)
     .add_plugin(WorldInspectorPlugin::new())
     .add_plugin(MainMenuPlugin)
+    .add_plugin(AtmospherePlugin)
+    .add_system(camera::set_brightness)
     .add_plugin(ModelLoaderPlugin)
     .add_plugins(DefaultPickingPlugins)
     .add_startup_system(spawn_camera)
@@ -46,7 +49,6 @@ fn main() {
         SystemSet::on_enter(AppState::Display)
         .with_system(spawn_basic_scene)
         .with_system(ui::setup_ui_components)
-        .with_system(background::setup)
     )
     .add_system(camera::orbital_camera)
     .add_startup_system(spawn_gltf)
