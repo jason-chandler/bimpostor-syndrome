@@ -139,10 +139,7 @@ pub(crate) fn set_brightness(
     mut atmosphere: AtmosphereMut<Nishita>,
     keys: Res<Input<KeyCode>>,
 ) {
-    if keys.just_pressed(KeyCode::Space) {
-        info!("setting sun position to default");
-        atmosphere.sun_position = Vec3::new(1.0, 1.0, 1.0);
-    } else if keys.just_pressed(KeyCode::Key1) {
+    if keys.just_pressed(KeyCode::Key1) {
         info!("setting sun position to preset 1");
         atmosphere.sun_position = Vec3::new(0.5, 0.5, 0.5);
     } else if keys.just_pressed(KeyCode::Key2) {
@@ -168,9 +165,9 @@ pub(crate) fn set_brightness(
         atmosphere.sun_position = Vec3::new(3.14, 3.14, 3.14);
     } else if keys.just_pressed(KeyCode::Key9) {
         info!("setting sun position to preset 9");
-        atmosphere.sun_position = Vec3::new(3.14, 3.14, 0.);
+        atmosphere.sun_position = Vec3::new(0., 0., 0.);
     } else if keys.just_pressed(KeyCode::Key0) {
         info!("setting sun position to preset 0");
-        atmosphere.sun_position = Vec3::new(0., 0., 0.);
+        atmosphere.sun_position = Vec3::new(1., 1., 1.);
     }
 }
