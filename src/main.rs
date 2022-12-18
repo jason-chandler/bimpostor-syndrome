@@ -2,11 +2,11 @@ mod main_menu;
 mod selection;
 mod camera;
 mod ui;
-mod background;
 
 use bevy::gltf::Gltf;
 use bevy::prelude::*;
 use bevy_inspector_egui::WorldInspectorPlugin;
+use bevy_atmosphere::prelude::*;
 
 pub use main_menu::*;
 
@@ -35,13 +35,13 @@ fn main() {
     .add_state(AppState::Menu)
     .add_plugin(WorldInspectorPlugin::new())
     .add_plugin(MainMenuPlugin)
+    .add_plugin(AtmospherePlugin)
     .add_startup_system(spawn_camera)
     .add_system_set(
         SystemSet::on_enter(AppState::Display)
         .with_system(spawn_basic_scene)
         .with_system(spawn_gltf)
         .with_system(ui::setup_ui_components)
-        .with_system(background::setup)
     )
     .add_system(camera::orbital_camera)
     .add_startup_system(selection::init_selection_material)

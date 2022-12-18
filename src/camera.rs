@@ -2,6 +2,7 @@ use bevy::input::keyboard::KeyboardInput;
 use bevy::prelude::*;
 use bevy::input::mouse::{MouseMotion, MouseWheel};
 use bevy::render::camera::Projection;
+use bevy_atmosphere::prelude::*;
 
 #[derive(Component)]
 pub(crate) struct OrbitalCamera {
@@ -125,6 +126,7 @@ pub(crate) fn spawn_camera(mut commands: Commands) {
                 .looking_at(Vec3::ZERO, Vec3::Y),
             ..Default::default()
         },
+        AtmosphereCamera::default(),
         OrbitalCamera {
             orbital_radius: radius,
             ..Default::default()
