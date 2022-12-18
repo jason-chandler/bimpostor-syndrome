@@ -22,6 +22,7 @@ pub enum AppState {
 fn main() {
     App::new()
     .insert_resource(ClearColor(Color::rgb(0.2, 0.2, 0.2)))
+    .insert_resource(AtmosphereModel::default())
     .add_plugins(DefaultPlugins.set(WindowPlugin {
         window: WindowDescriptor {
             width: WIDTH,
@@ -36,6 +37,7 @@ fn main() {
     .add_plugin(WorldInspectorPlugin::new())
     .add_plugin(MainMenuPlugin)
     .add_plugin(AtmospherePlugin)
+    .add_system(camera::set_brightness)
     .add_startup_system(spawn_camera)
     .add_system_set(
         SystemSet::on_enter(AppState::Display)

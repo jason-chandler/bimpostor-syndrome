@@ -133,3 +133,44 @@ pub(crate) fn spawn_camera(mut commands: Commands) {
         }
     ));
 }
+
+pub(crate) fn set_brightness(
+    mut commands: Commands,
+    mut atmosphere: AtmosphereMut<Nishita>,
+    keys: Res<Input<KeyCode>>,
+) {
+    if keys.just_pressed(KeyCode::Space) {
+        info!("setting sun position to default");
+        atmosphere.sun_position = Vec3::new(1.0, 1.0, 1.0);
+    } else if keys.just_pressed(KeyCode::Key1) {
+        info!("setting sun position to preset 1");
+        atmosphere.sun_position = Vec3::new(0.5, 0.5, 0.5);
+    } else if keys.just_pressed(KeyCode::Key2) {
+        info!("setting sun position to preset 2");
+        atmosphere.sun_position = Vec3::new(3.14 , 0., 0.);
+    } else if keys.just_pressed(KeyCode::Key3) {
+        info!("setting sun position to preset 3");
+        atmosphere.sun_position = Vec3::new(0., 3.14 , 0.);
+    } else if keys.just_pressed(KeyCode::Key4) {
+        info!("setting sun position to preset 4");
+        atmosphere.sun_position = Vec3::new(0., 0. , 3.14);
+    } else if keys.just_pressed(KeyCode::Key5) {
+        info!("setting sun position to preset 5");
+        atmosphere.sun_position = Vec3::new(1.57, 0., 3.0);
+    } else if keys.just_pressed(KeyCode::Key6) {
+        info!("setting sun position to preset 6");
+        atmosphere.sun_position = Vec3::new(0., 1.57, 0.);
+    } else if keys.just_pressed(KeyCode::Key7) {
+        info!("setting sun position to preset 7");
+        atmosphere.sun_position = Vec3::new(0., 0., 1.57);
+    } else if keys.just_pressed(KeyCode::Key8) {
+        info!("setting sun position to preset 8");
+        atmosphere.sun_position = Vec3::new(3.14, 3.14, 3.14);
+    } else if keys.just_pressed(KeyCode::Key9) {
+        info!("setting sun position to preset 9");
+        atmosphere.sun_position = Vec3::new(3.14, 3.14, 0.);
+    } else if keys.just_pressed(KeyCode::Key0) {
+        info!("setting sun position to preset 0");
+        atmosphere.sun_position = Vec3::new(0., 0., 0.);
+    }
+}
