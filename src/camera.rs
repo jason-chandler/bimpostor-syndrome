@@ -2,6 +2,8 @@ use bevy::input::keyboard::KeyboardInput;
 use bevy::prelude::*;
 use bevy::input::mouse::{MouseMotion, MouseWheel};
 use bevy::render::camera::Projection;
+use bevy_mod_picking::PickingCameraBundle;
+
 
 #[derive(Component)]
 pub(crate) struct OrbitalCamera {
@@ -128,6 +130,7 @@ pub(crate) fn spawn_camera(mut commands: Commands) {
         OrbitalCamera {
             orbital_radius: radius,
             ..Default::default()
-        }
+        },
+        PickingCameraBundle::default(),
     ));
 }

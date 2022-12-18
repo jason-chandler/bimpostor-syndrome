@@ -1,6 +1,5 @@
 mod main_menu;
 mod model_loader_plugin;
-mod selection;
 mod camera;
 mod ui;
 mod background;
@@ -9,6 +8,7 @@ use bevy::gltf::Gltf;
 use bevy::prelude::*;
 use bevy_inspector_egui::WorldInspectorPlugin;
 use std::f32::consts::PI;
+use bevy_mod_picking::{DefaultPickingPlugins, PickableBundle, PickingCameraBundle};
 
 pub use main_menu::*;
 pub use model_loader_plugin::*;
@@ -40,6 +40,7 @@ fn main() {
     .add_plugin(WorldInspectorPlugin::new())
     .add_plugin(MainMenuPlugin)
     .add_plugin(ModelLoaderPlugin)
+    .add_plugins(DefaultPickingPlugins)
     .add_startup_system(spawn_camera)
     .add_system_set(
         SystemSet::on_enter(AppState::Display)
@@ -48,9 +49,33 @@ fn main() {
         .with_system(background::setup)
     )
     .add_system(camera::orbital_camera)
-    .add_startup_system(selection::init_selection_material)
-    .add_system(selection::add_selection)
+    .add_startup_system(spawn_gltf)
     .run();
+}
+
+fn spawn_gltf(
+    mut commands: Commands,
+    ass: Res<AssetServer>,
+    mut transform_query: Query<Entity>,
+    mut child_query: Query<&Children>,
+) {
+    // note that we have to include the `Scene0` label
+    let my_gltf = ass.load("LL_house.gltf#Scene0");
+
+    // to position our 3d model, simply use the Transform
+    // in the SceneBundle
+    let scene  = commands.spawn(SceneBundle {
+        scene: my_gltf,
+        transform: Transform::from_xyz(0.0, 0.5, 0.0),
+        ..Default::default()
+    })
+    .insert(Name::new("Test"))
+    .insert(PickableBundle::default()).id();
+
+
+    for mut child in child_query.iter_descendants(scene) {
+        commands.entity(child).insert(PickableBundle::default());
+    }
 }
 
 // https://bevyengine.org/examples/3d/lighting/
@@ -60,11 +85,11 @@ fn spawn_basic_scene(
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     commands
-        .spawn(PbrBundle {
+        .spawn((PbrBundle {
             mesh: meshes.add(Mesh::from(shape::Plane { size: 1000.0 })),
             material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
             ..default()
-        })
+        }, PickableBundle::default()))
         .insert(Name::new("Ground"));
 
         const HALF_SIZE: f32 = 10.0;
