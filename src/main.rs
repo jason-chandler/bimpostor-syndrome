@@ -1,4 +1,5 @@
 mod main_menu;
+mod model_loader_plugin;
 mod selection;
 mod camera;
 mod ui;
@@ -9,6 +10,8 @@ use bevy::prelude::*;
 use bevy_inspector_egui::WorldInspectorPlugin;
 
 pub use main_menu::*;
+pub use model_loader_plugin::*;
+
 
 pub const HEIGHT: f32 = 720.0;
 pub const WIDTH: f32 = 1280.0;
@@ -32,14 +35,14 @@ fn main() {
         },
         ..default()
     }))
-    .add_state(AppState::Menu)
+    .add_state(AppState::Display)
     .add_plugin(WorldInspectorPlugin::new())
     .add_plugin(MainMenuPlugin)
+    .add_plugin(ModelLoaderPlugin)
     .add_startup_system(spawn_camera)
     .add_system_set(
         SystemSet::on_enter(AppState::Display)
         .with_system(spawn_basic_scene)
-        .with_system(spawn_gltf)
         .with_system(ui::setup_ui_components)
         .with_system(background::setup)
     )
@@ -47,27 +50,6 @@ fn main() {
     .add_startup_system(selection::init_selection_material)
     .add_system(selection::add_selection)
     .run();
-}
-
-fn spawn_gltf(
-    mut commands: Commands,
-    ass: Res<AssetServer>,
-) {
-    // note that we have to include the `Scene0` label
-    let my_gltf = ass.load("LL_house.gltf#Scene0");
-
-    // to position our 3d model, simply use the Transform
-    // in the SceneBundle
-    commands.spawn(SceneBundle {
-        scene: my_gltf,
-        transform: Transform::from_xyz(0.0, 0.5, 0.0),
-        ..Default::default()
-    })
-    .insert(Name::new("Test"));
-}
-
-fn asset_loading(mut commands: Commands, assets: Res<AssetServer>) {
-
 }
 
 fn spawn_basic_scene(
