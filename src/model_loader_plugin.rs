@@ -24,10 +24,6 @@ impl Plugin for ModelLoaderPlugin {
         .add_event::<UnLoadModelEvent>()
         .insert_resource(LoaderState(false))
         .add_system_set(
-            SystemSet::on_enter(AppState::Display)
-            .with_system(init_loader)
-        )
-        .add_system_set(
             SystemSet::on_update(AppState::Display)
                 .with_system(keyboard_input_system)
                 .with_system(load_event_listener)
@@ -36,27 +32,20 @@ impl Plugin for ModelLoaderPlugin {
     }
 }
 
-fn init_loader(
-    mut commands: Commands
-){
-
-}
 fn keyboard_input_system(
     keyboard_input: Res<Input<KeyCode>>,
     mut load_events: EventWriter<LoadModelEvent>,
-    mut unload_events: EventWriter<UnLoadModelEvent>
+    mut unload_events: EventWriter<UnLoadModelEvent>,
+    mut state: ResMut<LoaderState>,
 ) {
-
-    if keyboard_input.just_released(KeyCode::A) {
-        info!("'A' just released");
-        load_events.send(LoadModelEvent {
-            path: "LL_house.gltf#Scene0".to_string(),
-        });
-    }
-
-    if keyboard_input.just_released(KeyCode::U) {
-        info!("'U' just released");
-        unload_events.send_default();
+    if keyboard_input.just_released(KeyCode::Space) {
+        if !state.0 {
+            load_events.send(LoadModelEvent {
+                path: "LL_house.gltf#Scene0".to_string(),
+            });
+        } else {
+            unload_events.send_default();
+        }
     }
 }
 
