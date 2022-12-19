@@ -119,7 +119,7 @@ fn get_primary_window_size(windows: &Res<Windows>) -> Vec2 {
 }
 
 pub(crate) fn spawn_camera(mut commands: Commands) {
-    let translation = Vec3::new(-2.0, 2.5, 5.0);
+    let translation = Vec3::new(-2.0, 30.0, 30.0);
     let radius = translation.length();
 
     commands.spawn((
@@ -128,7 +128,7 @@ pub(crate) fn spawn_camera(mut commands: Commands) {
                 .looking_at(Vec3::ZERO, Vec3::Y),
             ..Default::default()
         },
-        AtmosphereCamera::default(),
+        //AtmosphereCamera::default(),
         OrbitalCamera {
             orbital_radius: radius,
             ..Default::default()

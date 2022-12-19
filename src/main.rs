@@ -3,12 +3,10 @@ mod model_loader_plugin;
 mod camera;
 mod ui;
 
-use bevy::gltf::Gltf;
 use bevy::prelude::*;
-use bevy_atmosphere::prelude::*;
-use bevy_inspector_egui::{RegisterInspectable, WorldInspectorPlugin};
+use bevy_inspector_egui::{ WorldInspectorPlugin};
+//use bevy_atmosphere::prelude::*;
 use std::f32::consts::PI;
-use bevy::asset::LoadState;
 use bevy::render::primitives::Aabb;
 use bevy_mod_picking::{DebugCursorPickingPlugin, DebugEventsPickingPlugin, DefaultPickingPlugins, PickableBundle, PickableMesh, PickingCameraBundle, PickingRaycastSet, RaycastMesh, Selection};
 
@@ -31,7 +29,7 @@ struct Unselectable;
 fn main() {
     App::new()
     .insert_resource(ClearColor(Color::rgb(0.2, 0.2, 0.2)))
-    .insert_resource(AtmosphereModel::default())
+    //.insert_resource(AtmosphereModel::default())
     .add_plugins(DefaultPlugins.set(WindowPlugin {
         window: WindowDescriptor {
             width: WIDTH,
@@ -45,8 +43,8 @@ fn main() {
     .add_state(AppState::Display)
     .add_plugin(WorldInspectorPlugin::new())
     .add_plugin(MainMenuPlugin)
-    .add_plugin(AtmospherePlugin)
-    .add_system(camera::set_brightness)
+    //.add_plugin(AtmospherePlugin)
+    //.add_system(camera::set_brightness)
     .add_plugin(ModelLoaderPlugin)
     .add_plugins(DefaultPickingPlugins)
     .add_plugin(DebugCursorPickingPlugin) // <- Adds the debug cursor (optional)
