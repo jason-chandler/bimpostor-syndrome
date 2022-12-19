@@ -40,7 +40,7 @@ fn keyboard_input_system(
     mut unload_events: EventWriter<UnLoadModelEvent>,
     mut state: ResMut<LoaderState>,
 ) {
-    let vs = vec!["test.gltf#Scene0", "model-part.gltf_slabs_+10.76.gltf#Scene0"];
+    let vs = vec!["test.gltf#Scene0", "duplex.glb#Scene0", "cyclist.glb#Scene0"];
     if keyboard_input.just_released(KeyCode::Space) {
         if !state.0 {
             load_events.send(LoadModelEvent {
