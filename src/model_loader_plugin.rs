@@ -1,3 +1,5 @@
+use rand::seq::SliceRandom;
+
 use bevy::{prelude::*};
 
 use crate::AppState;
@@ -38,10 +40,11 @@ fn keyboard_input_system(
     mut unload_events: EventWriter<UnLoadModelEvent>,
     mut state: ResMut<LoaderState>,
 ) {
+    let vs = vec!["test.gltf#Scene0", "model-part.gltf_slabs_+10.76.gltf#Scene0"];
     if keyboard_input.just_released(KeyCode::Space) {
         if !state.0 {
             load_events.send(LoadModelEvent {
-                path: "test.gltf#Scene0".to_string(),
+                path: vs.choose(&mut rand::thread_rng()).unwrap().to_string(),
             });
         } else {
             unload_events.send_default();
