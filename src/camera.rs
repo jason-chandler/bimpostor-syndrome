@@ -172,21 +172,17 @@ pub(crate) fn set_brightness(
     } else if keys.just_pressed(KeyCode::Key0) {
         info!("setting sun position to preset 0");
         atmosphere.sun_position = Vec3::new(1., 1., 1.);
+    } else if keys.just_pressed(KeyCode::R) {
+        info!("red hue");
+        atmosphere.rayleigh_coefficient = Vec3::new(2e-5, 1e-5, 1e-5);
+    } else if keys.just_pressed(KeyCode::G) {
+         info!("green hue");
+        atmosphere.rayleigh_coefficient = Vec3::new(1e-5, 2e-5, 1e-5);
+    } else if keys.just_pressed(KeyCode::B) {
+         info!("blue hue");
+        atmosphere.rayleigh_coefficient = Vec3::new(1e-5, 1e-5, 2e-5);
+    } else if keys.just_pressed(KeyCode::Y) {
+         info!("default yellow hue");
+        atmosphere.rayleigh_coefficient = Vec3::new(55e-7, 13e-6, 224e-7);
     }
 }
-
-// pub(crate) fn set_color(
-//     mut commands: Commands,
-//     mut atmosphere: AtmosphereMut<Nishita>,
-//     keys: Res<Input<KeyCode>>,
-// ) {
-//     if keys.just_pressed(KeyCode::R) {
-//         atmosphere.horizon = Color::RED;
-//     } else if keys.just_pressed(KeyCode::G) {
-//         atmosphere.horizon = Color::GREEN;
-//     } else if keys.just_pressed(KeyCode::B) {
-//         atmosphere.horizon = Color::BLUE;
-//     } else if keys.just_pressed(KeyCode::Y) {
-//         atmosphere.horizon = Color::YELLOW;
-//     }
-// }
