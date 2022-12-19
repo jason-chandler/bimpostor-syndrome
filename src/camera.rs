@@ -65,7 +65,7 @@ fn move_camera(
             pan_orbit.focal_point += translation;
         } else if zoom.abs() > 0.0 {
             pos_changed = true;
-            pan_orbit.orbital_radius -= zoom * pan_orbit.orbital_radius * 0.2;
+            pan_orbit.orbital_radius -= zoom * pan_orbit.orbital_radius * 0.02;
             // dont allow zoom to reach zero or you get stuck
             pan_orbit.orbital_radius = f32::max(pan_orbit.orbital_radius, 0.05);
         }
