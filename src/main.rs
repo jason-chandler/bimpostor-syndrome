@@ -6,9 +6,11 @@ mod background;
 
 use bevy::gltf::Gltf;
 use bevy::prelude::*;
-use bevy_inspector_egui::WorldInspectorPlugin;
+use bevy_inspector_egui::{RegisterInspectable, WorldInspectorPlugin};
 use std::f32::consts::PI;
-use bevy_mod_picking::{DefaultPickingPlugins, PickableBundle, PickingCameraBundle};
+use bevy::asset::LoadState;
+use bevy::render::primitives::Aabb;
+use bevy_mod_picking::{DebugCursorPickingPlugin, DebugEventsPickingPlugin, DefaultPickingPlugins, PickableBundle, PickableMesh, PickingCameraBundle, PickingRaycastSet, RaycastMesh, Selection};
 
 pub use main_menu::*;
 pub use model_loader_plugin::*;
@@ -22,6 +24,9 @@ pub enum AppState {
     Menu,
     Display,
 }
+
+#[derive(Component)]
+struct Unselectable;
 
 fn main() {
     App::new()
@@ -41,6 +46,8 @@ fn main() {
     .add_plugin(MainMenuPlugin)
     .add_plugin(ModelLoaderPlugin)
     .add_plugins(DefaultPickingPlugins)
+    .add_plugin(DebugCursorPickingPlugin) // <- Adds the debug cursor (optional)
+    .add_plugin(DebugEventsPickingPlugin) // <- Adds debug event logging (optional)
     .add_startup_system(spawn_camera)
     .add_system_set(
         SystemSet::on_enter(AppState::Display)
@@ -50,6 +57,7 @@ fn main() {
     )
     .add_system(camera::orbital_camera)
     .add_startup_system(spawn_gltf)
+    .add_system(make_pickable)
     .run();
 }
 
@@ -70,12 +78,7 @@ fn spawn_gltf(
         ..Default::default()
     })
     .insert(Name::new("Test"))
-    .insert(PickableBundle::default()).id();
-
-
-    for mut child in child_query.iter_descendants(scene) {
-        commands.entity(child).insert(PickableBundle::default());
-    }
+    .id();
 }
 
 // https://bevyengine.org/examples/3d/lighting/
@@ -89,8 +92,9 @@ fn spawn_basic_scene(
             mesh: meshes.add(Mesh::from(shape::Plane { size: 1000.0 })),
             material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
             ..default()
-        }, PickableBundle::default()))
-        .insert(Name::new("Ground"));
+        }))
+        .insert(Name::new("Ground"))
+        .insert(Unselectable);
 
         const HALF_SIZE: f32 = 10.0;
     commands.spawn(DirectionalLightBundle {
@@ -115,8 +119,20 @@ fn spawn_basic_scene(
         },
         ..default()
     })
-    .insert(Name::new("Light"));
+    .insert(Name::new("Light"))
+    .insert(Unselectable);
 }
+
+fn make_pickable(
+    mut commands: Commands,
+    mut scene_query: Query<Entity, (With<Aabb>, Without<Selection>, Without<Unselectable>)>
+) {
+    for mut ent in scene_query.iter_mut() {
+        commands.entity(ent)
+            .insert(PickableBundle::default());
+    }
+}
+
 
 fn spawn_camera(mut commands: Commands) {
     camera::spawn_camera(commands)
