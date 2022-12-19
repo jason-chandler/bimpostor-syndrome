@@ -2,6 +2,7 @@ use bevy::input::keyboard::KeyboardInput;
 use bevy::prelude::*;
 use bevy::input::mouse::{MouseMotion, MouseWheel};
 use bevy::render::camera::Projection;
+use bevy_atmosphere::prelude::*;
 use bevy_mod_picking::PickingCameraBundle;
 
 
@@ -127,10 +128,61 @@ pub(crate) fn spawn_camera(mut commands: Commands) {
                 .looking_at(Vec3::ZERO, Vec3::Y),
             ..Default::default()
         },
+        AtmosphereCamera::default(),
         OrbitalCamera {
             orbital_radius: radius,
             ..Default::default()
         },
         PickingCameraBundle::default(),
     ));
+}
+
+pub(crate) fn set_brightness(
+    mut commands: Commands,
+    mut atmosphere: AtmosphereMut<Nishita>,
+    keys: Res<Input<KeyCode>>,
+) {
+    if keys.just_pressed(KeyCode::Key1) {
+        info!("setting sun position to preset 1");
+        atmosphere.sun_position = Vec3::new(0.5, 0.5, 0.5);
+    } else if keys.just_pressed(KeyCode::Key2) {
+        info!("setting sun position to preset 2");
+        atmosphere.sun_position = Vec3::new(3.14 , 0., 0.);
+    } else if keys.just_pressed(KeyCode::Key3) {
+        info!("setting sun position to preset 3");
+        atmosphere.sun_position = Vec3::new(0., 3.14 , 0.);
+    } else if keys.just_pressed(KeyCode::Key4) {
+        info!("setting sun position to preset 4");
+        atmosphere.sun_position = Vec3::new(0., 0. , 3.14);
+    } else if keys.just_pressed(KeyCode::Key5) {
+        info!("setting sun position to preset 5");
+        atmosphere.sun_position = Vec3::new(1.57, 0., 3.0);
+    } else if keys.just_pressed(KeyCode::Key6) {
+        info!("setting sun position to preset 6");
+        atmosphere.sun_position = Vec3::new(0., 1.57, 0.);
+    } else if keys.just_pressed(KeyCode::Key7) {
+        info!("setting sun position to preset 7");
+        atmosphere.sun_position = Vec3::new(0., 0., 1.57);
+    } else if keys.just_pressed(KeyCode::Key8) {
+        info!("setting sun position to preset 8");
+        atmosphere.sun_position = Vec3::new(3.14, 3.14, 3.14);
+    } else if keys.just_pressed(KeyCode::Key9) {
+        info!("setting sun position to preset 9");
+        atmosphere.sun_position = Vec3::new(0., 0., 0.);
+    } else if keys.just_pressed(KeyCode::Key0) {
+        info!("setting sun position to preset 0");
+        atmosphere.sun_position = Vec3::new(1., 1., 1.);
+    } else if keys.just_pressed(KeyCode::R) {
+        info!("red hue");
+        atmosphere.rayleigh_coefficient = Vec3::new(2e-5, 1e-5, 1e-5);
+    } else if keys.just_pressed(KeyCode::G) {
+         info!("green hue");
+        atmosphere.rayleigh_coefficient = Vec3::new(1e-5, 2e-5, 1e-5);
+    } else if keys.just_pressed(KeyCode::B) {
+         info!("blue hue");
+        atmosphere.rayleigh_coefficient = Vec3::new(1e-5, 1e-5, 2e-5);
+    } else if keys.just_pressed(KeyCode::Y) {
+         info!("default yellow hue");
+        atmosphere.rayleigh_coefficient = Vec3::new(55e-7, 13e-6, 224e-7);
+    }
 }
